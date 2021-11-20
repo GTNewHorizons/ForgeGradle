@@ -343,10 +343,6 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
         SourceSet test = javaConv.getSourceSets().getByName(SourceSet.TEST_SOURCE_SET_NAME);
         SourceSet api = javaConv.getSourceSets().create("api");
 
-        // set the Source
-        javaConv.setSourceCompatibility(JavaVersion.VERSION_1_8);
-        javaConv.setTargetCompatibility(JavaVersion.VERSION_1_8);
-
         main.setCompileClasspath(main.getCompileClasspath().plus(api.getOutput()));
         test.setCompileClasspath(test.getCompileClasspath().plus(api.getOutput()));
 
