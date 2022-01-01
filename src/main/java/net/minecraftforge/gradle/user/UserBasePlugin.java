@@ -503,14 +503,14 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
                                 {
                                         "Minecraft Client",
                                         GRADLE_START_CLIENT,
-                                        "-Xincgc -Xmx6G -Xms256M",
+                                        "-Xmx6G -Xms256M",
                                         Joiner.on(' ').join(getClientRunArgs())
                                 },
                         new String[]
                                 {
                                         "Minecraft Server",
                                         GRADLE_START_SERVER,
-                                        "-Xincgc -Xmx6G -Xms256M -Dfml.ignoreInvalidMinecraftCertificates=true",
+                                        "-Xmx6G -Xms256M -Dfml.ignoreInvalidMinecraftCertificates=true",
                                         Joiner.on(' ').join(getServerRunArgs())
                                 }
                 };
@@ -786,7 +786,7 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
             });
             exec.doFirst(new MakeDirExist(delayedFile("{RUN_DIR}")));
             exec.setMain(GRADLE_START_CLIENT);
-            exec.jvmArgs("-Xincgc", "-Xmx6G", "-Xms256M", "-Dfml.ignoreInvalidMinecraftCertificates=true");
+            exec.jvmArgs("-Xmx6G", "-Xms256M", "-Dfml.ignoreInvalidMinecraftCertificates=true");
             exec.args(getClientRunArgs());
             exec.setStandardOutput(System.out);
             exec.setErrorOutput(System.err);
@@ -807,7 +807,7 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
             });
             exec.doFirst(new MakeDirExist(delayedFile("{RUN_DIR}")));
             exec.setMain(GRADLE_START_SERVER);
-            exec.jvmArgs("-Xincgc", "-Xmx6G", "-Xms256M", "-Dfml.ignoreInvalidMinecraftCertificates=true");
+            exec.jvmArgs("-Xmx6G", "-Xms256M", "-Dfml.ignoreInvalidMinecraftCertificates=true");
             exec.args(getServerRunArgs());
             exec.setStandardOutput(System.out);
             exec.setStandardInput(System.in);
@@ -842,7 +842,7 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
                 }
             });
             exec.setMain(GRADLE_START_CLIENT);
-            exec.jvmArgs("-Xincgc", "-Xmx6G", "-Xms256M", "-Dfml.ignoreInvalidMinecraftCertificates=true");
+            exec.jvmArgs("-Xmx6G", "-Xms256M", "-Dfml.ignoreInvalidMinecraftCertificates=true");
             exec.args(getClientRunArgs());
             exec.setStandardOutput(System.out);
             exec.setErrorOutput(System.err);
@@ -876,7 +876,7 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
                 }
             });
             exec.setMain(GRADLE_START_SERVER);
-            exec.jvmArgs("-Xincgc", "-Xmx6G", "-Xms256M", "-Dfml.ignoreInvalidMinecraftCertificates=true");
+            exec.jvmArgs("-Xmx6G", "-Xms256M", "-Dfml.ignoreInvalidMinecraftCertificates=true");
             exec.args(getServerRunArgs());
             exec.setStandardOutput(System.out);
             exec.setStandardInput(System.in);
