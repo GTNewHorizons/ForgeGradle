@@ -503,15 +503,15 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
                                 {
                                         "Minecraft Client",
                                         GRADLE_START_CLIENT,
-                                        setToString(getClientJvmArgs()),
-                                        setToString(getClientArgs())
+                                        listToString(getClientJvmArgs()),
+                                        listToString(getClientArgs())
                                 },
                         new String[]
                                 {
                                         "Minecraft Server",
                                         GRADLE_START_SERVER,
-                                        setToString(getServerJvmArgs()),
-                                        setToString(getServerArgs())
+                                        listToString(getServerJvmArgs()),
+                                        listToString(getServerArgs())
                                 }
                 };
 
@@ -585,7 +585,7 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
         return collectArgs(getMcExtension(project).getRunServer().getJvmArgs(), INTERNAL_JVM_ARGS);
     }
 
-    private String setToString(List<String> strs) {return String.join(" ", strs);}
+    private String listToString(List<String> strs) {return String.join(" ", strs);}
 
     private static BaseExtension getMcExtension(Project project) {
         return (BaseExtension) project.getExtensions().getByName(Constants.EXT_NAME_MC);
