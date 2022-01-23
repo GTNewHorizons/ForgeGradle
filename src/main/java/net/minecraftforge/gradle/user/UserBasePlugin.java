@@ -840,8 +840,8 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
             });
             exec.doFirst(new MakeDirExist(delayedFile("{RUN_DIR}")));
             exec.setMain(GRADLE_START_CLIENT);
-            exec.jvmArgs(getClientJvmArgs());
-            exec.args(getClientArgs());
+            exec.jvmArgs(INTERNAL_JVM_ARGS);
+            exec.args(getClientRunArgs());
             exec.setStandardOutput(System.out);
             exec.setErrorOutput(System.err);
 
@@ -861,8 +861,8 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
             });
             exec.doFirst(new MakeDirExist(delayedFile("{RUN_DIR}")));
             exec.setMain(GRADLE_START_SERVER);
-            exec.jvmArgs(getServerJvmArgs());
-            exec.args(getServerArgs());
+            exec.jvmArgs(INTERNAL_JVM_ARGS);
+            exec.args(getServerRunArgs());
             exec.setStandardOutput(System.out);
             exec.setStandardInput(System.in);
             exec.setErrorOutput(System.err);

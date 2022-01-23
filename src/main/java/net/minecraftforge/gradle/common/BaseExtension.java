@@ -43,13 +43,13 @@ public class BaseExtension {
         checkMappings();
     }
 
-    public void clientRunConfig(Closure<RunConfig> c) {
+    public void clientIntellijRun(Closure<RunConfig> c) {
         c.setResolveStrategy(Closure.DELEGATE_FIRST);
         c.setDelegate(runClient);
         c.call();
     }
 
-    public void serverRunConfig(Closure<RunConfig> c) {
+    public void serverIntellijRun(Closure<RunConfig> c) {
         c.setResolveStrategy(Closure.DELEGATE_FIRST);
         c.setDelegate(runServer);
         c.call();
