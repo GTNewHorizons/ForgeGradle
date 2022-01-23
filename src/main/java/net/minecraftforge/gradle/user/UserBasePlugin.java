@@ -43,9 +43,8 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import static net.minecraftforge.gradle.common.Constants.*;
 import static net.minecraftforge.gradle.user.UserConstants.*;
@@ -564,31 +563,32 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
             f.mkdirs();
     }
 
-    private Set<String> getClientArgs() {
+    private List<String> getClientArgs() {
         return collectArgs(getMcExtension(project).getRunClient().getArgs(), getClientRunArgs());
     }
 
-    private Set<String> getClientJvmArgs() {
+    private List<String> getClientJvmArgs() {
         return collectArgs(getMcExtension(project).getRunClient().getJvmArgs(), INTERNAL_JVM_ARGS);
     }
 
-    private Set<String> getServerArgs() {
+    private List<String> getServerArgs() {
         return collectArgs(getMcExtension(project).getRunServer().getArgs(), getServerRunArgs());
     }
 
-    private Set<String> getServerJvmArgs() {
+    private List<String> getServerJvmArgs() {
         return collectArgs(getMcExtension(project).getRunServer().getJvmArgs(), INTERNAL_JVM_ARGS);
     }
 
-    private String setToString(Set<String> strs) {return String.join(" ", strs);}
+    private String setToString(List<String> strs) {return String.join(" ", strs);}
 
     private static BaseExtension getMcExtension(Project project) {
         return (BaseExtension) project.getExtensions().getByName(Constants.EXT_NAME_MC);
     }
 
-    private Set<String> collectArgs(List<String> userArgs, Iterable<String> internalArgs) {
-        Set<String> args = new HashSet<>(userArgs);
+    private List<String> collectArgs(List<String> userArgs, Iterable<String> internalArgs) {
+        List<String> args = new ArrayList<>();
         internalArgs.forEach(args::add);
+        args.addAll(userArgs);
         return args;
     }
 
