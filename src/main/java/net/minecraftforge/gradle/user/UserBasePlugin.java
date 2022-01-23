@@ -4,7 +4,6 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import groovy.lang.Closure;
 import net.minecraftforge.gradle.common.BasePlugin;
@@ -46,7 +45,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 import static net.minecraftforge.gradle.common.Constants.*;
 import static net.minecraftforge.gradle.user.UserConstants.*;
@@ -515,6 +513,12 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
                                 }
                 };
 
+        String projectName = project.getName();
+        String moduleName = ((IdeaModel) project.getExtensions().getByName("idea")).getModule().getName();
+        // if module name is not set in build.gradle it will be the same as project name by default,
+        // but since we have main module by default, we add it if the module name was not overridden by user.
+        String runModule = projectName.equals(moduleName) ? projectName + ".main" : projectName + "." + moduleName;
+
         for (String[] data : config) {
             Element child = add(root, "configuration",
                     "default", "false",
@@ -537,7 +541,7 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
             add(child, "option", "name", "ENABLE_SWING_INSPECTOR", "value", "false");
             add(child, "option", "name", "ENV_VARIABLES");
             add(child, "option", "name", "PASS_PARENT_ENVS", "value", "true");
-            add(child, "module", "name", ((IdeaModel) project.getExtensions().getByName("idea")).getModule().getName());
+            add(child, "module", "name", runModule);
             add(child, "envs");
             add(child, "RunnerSettings", "RunnerId", "Run");
             add(child, "ConfigurationWrapper", "RunnerId", "Run");
