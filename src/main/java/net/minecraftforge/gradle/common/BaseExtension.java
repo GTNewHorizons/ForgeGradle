@@ -1,6 +1,7 @@
 package net.minecraftforge.gradle.common;
 
 import com.google.common.base.Strings;
+import groovy.lang.Closure;
 import net.minecraftforge.gradle.GradleConfigurationException;
 import org.gradle.api.Project;
 
@@ -22,8 +23,13 @@ public class BaseExtension {
     protected int mappingsVersion = -1;
     protected String customVersion = null;
 
+    private final RunConfig runClient;
+    private final RunConfig runServer;
+
     public BaseExtension(BasePlugin<? extends BaseExtension> plugin) {
         this.project = plugin.project;
+        this.runClient = new RunConfig();
+        this.runServer = new RunConfig();
     }
 
     public String getVersion() {
@@ -35,6 +41,18 @@ public class BaseExtension {
 
         // maybe they set the mappings first
         checkMappings();
+    }
+
+    public void clientRunConfig(Closure<RunConfig> c) {
+        c.setResolveStrategy(Closure.DELEGATE_FIRST);
+        c.setDelegate(runClient);
+        c.call();
+    }
+
+    public void serverRunConfig(Closure<RunConfig> c) {
+        c.setResolveStrategy(Closure.DELEGATE_FIRST);
+        c.setDelegate(runServer);
+        c.call();
     }
 
     public String getMcpVersion() {
@@ -186,5 +204,13 @@ public class BaseExtension {
         Arrays.sort(array);
         int foundIndex = Arrays.binarySearch(array, key);
         return foundIndex >= 0 && array[foundIndex] == key;
+    }
+
+    public RunConfig getRunClient() {
+        return runClient;
+    }
+
+    public RunConfig getRunServer() {
+        return runServer;
     }
 }
