@@ -497,6 +497,10 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
             }
         }
 
+        if(root == null) {
+            throw new IllegalStateException("'genIntellijRuns' task can't be run without running 'setupDecompWorkspace'");
+        }
+
         String[][] config = new String[][]
                 {
                         new String[]
