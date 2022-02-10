@@ -106,7 +106,7 @@ public class GenDevProjectsTask extends DefaultTask {
                 "{"
         );
 
-        // read json, output json in gradle freindly format...
+        // read json, output json in gradle friendly format...
         for (String dep : deps) {
             o.append("    compile '").append(dep).append('\'').append(NEWLINE);
         }

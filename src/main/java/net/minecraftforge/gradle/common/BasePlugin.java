@@ -58,7 +58,7 @@ public abstract class BasePlugin<K extends BaseExtension> implements Plugin<Proj
                 if (canOverlayPlugin()) {
                     project.getLogger().info("Applying Overlay");
 
-                    // found another BasePlugin thats already applied.
+                    // found another BasePlugin that's already applied.
                     // do only overlay stuff and return;
                     otherPlugin = (BasePlugin) p;
                     applyOverlayPlugin();
@@ -107,7 +107,7 @@ public abstract class BasePlugin<K extends BaseExtension> implements Plugin<Proj
         project.afterEvaluate(new Action<Project>() {
             @Override
             public void execute(Project project) {
-                // dont continue if its already failed!
+                // don't continue if it's already failed!
                 if (project.getState().getFailure() != null)
                     return;
 
