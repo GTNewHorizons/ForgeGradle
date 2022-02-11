@@ -257,10 +257,6 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
      */
     protected abstract Iterable<String> getServerRunArgs();
 
-//    protected abstract void configureCISetup(Task task);
-//    protected abstract void configureDevSetup(Task task);
-//    protected abstract void configureDecompSetup(Task task);
-
     @Override
     public String resolve(String pattern, Project project, T exten) {
         pattern = super.resolve(pattern, project, exten);
@@ -809,7 +805,6 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
         }
     }
 
-    @SuppressWarnings("serial")
     private class MakeDirExist extends Closure<Boolean> {
         DelayedFile path;
 
@@ -887,7 +882,7 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
                 @Override
                 public void execute(Object o) {
                     project.getLogger().error("");
-                    project.getLogger().error("THIS TASK WILL BE DEP RECATED SOON!");
+                    project.getLogger().error("THIS TASK WILL BE DEPRECATED SOON!");
                     project.getLogger().error("Instead use the runClient task, with the --debug-jvm option");
                     if (!project.getGradle().getGradleVersion().equals("1.12")) {
                         project.getLogger().error("You may have to update to Gradle 1.12");
@@ -938,7 +933,7 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
             exec.setDebug(true);
 
             exec.setGroup("ForgeGradle");
-            exec.setDescription("Runs the Minecraft serevr in debug mode");
+            exec.setDescription("Runs the Minecraft server in debug mode");
 
             exec.dependsOn("makeStart");
         }
@@ -1122,28 +1117,28 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
 
         JavaExec exec = (JavaExec) project.getTasks().getByName("runClient");
         {
-            exec.classpath(project.getConfigurations().getByName("runtime"));
+            exec.classpath(project.getConfigurations().getByName("runtimeClasspath"));
             exec.classpath(jarTask.getArchivePath());
             exec.dependsOn(jarTask);
         }
 
         exec = (JavaExec) project.getTasks().getByName("runServer");
         {
-            exec.classpath(project.getConfigurations().getByName("runtime"));
+            exec.classpath(project.getConfigurations().getByName("runtimeClasspath"));
             exec.classpath(jarTask.getArchivePath());
             exec.dependsOn(jarTask);
         }
 
         exec = (JavaExec) project.getTasks().getByName("debugClient");
         {
-            exec.classpath(project.getConfigurations().getByName("runtime"));
+            exec.classpath(project.getConfigurations().getByName("runtimeClasspath"));
             exec.classpath(jarTask.getArchivePath());
             exec.dependsOn(jarTask);
         }
 
         exec = (JavaExec) project.getTasks().getByName("debugServer");
         {
-            exec.classpath(project.getConfigurations().getByName("runtime"));
+            exec.classpath(project.getConfigurations().getByName("runtimeClasspath"));
             exec.classpath(jarTask.getArchivePath());
             exec.dependsOn(jarTask);
         }
@@ -1210,7 +1205,7 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
     protected abstract void doVersionChecks(String version);
 
     /**
-     * Returns a file in the DirtyDir if the deobfuscation task is dirty. Otherwise returns the cached one.
+     * Returns a file in the DirtyDir if the deobfuscation task is dirty. Otherwise, returns the cached one.
      *
      * @param name       the name..
      * @param classifier the classifier
@@ -1222,7 +1217,7 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
     }
 
     /**
-     * Returns a file in the DirtyDir if the deobfuscation task is dirty. Otherwise returns the cached one.
+     * Returns a file in the DirtyDir if the deobfuscation task is dirty. Otherwise, returns the cached one.
      *
      * @param name         the name..
      * @param classifier   the classifier
@@ -1265,7 +1260,7 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
         if (!git.exists()) {
             git.getParentFile().mkdir();
             try {
-                Files.write("#Seriously guys, stop commiting this to your git repo!\r\n*".getBytes(), git);
+                Files.write("#Seriously guys, stop committing this to your git repo!\r\n*".getBytes(), git);
             } catch (IOException e) {
             }
         }
