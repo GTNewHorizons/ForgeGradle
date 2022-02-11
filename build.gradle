@@ -193,3 +193,9 @@ publishing {
 // write out version so it's convenient for doc deployment
 file('build').mkdirs()
 file('build/version.txt').text = version;
+
+tasks.register('setupCIWorkspace') {
+    doFirst {
+        println 'not necessary'
+    }
+}
