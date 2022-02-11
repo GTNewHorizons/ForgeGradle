@@ -10,6 +10,9 @@ group = 'net.minecraftforge.gradle'
 
 version = gitVersion()
 
+// Fix Jenkins' Git: chmod a file should not be detected as a change and append a '.dirty' to the version
+'git config core.fileMode false'.execute()
+
 archivesBaseName = 'ForgeGradle'
 targetCompatibility = '1.8'
 sourceCompatibility = '1.8'
@@ -18,30 +21,29 @@ repositories {
     mavenLocal()
     mavenCentral()
     maven {
-        name = "forge"
-        url = "https://maven.minecraftforge.net/"
+        name 'forge'
+        url 'https://maven.minecraftforge.net/'
     }
 	maven {
-		name = "GT forge Mirror"
-		url = "https://gregtech.overminddl1.com/"
+		name 'GT forge Mirror'
+		url 'https://gregtech.overminddl1.com/'
 	}	
     maven {
         // because Srg2Source needs an eclipse dependency.
-        name = "eclipse"
-        url = "https://repo.eclipse.org/content/groups/eclipse/"
+        name 'eclipse'
+        url 'https://repo.eclipse.org/content/groups/eclipse/'
     }
     maven {
         // because SpecialSource doesn't have a full release
-        name = "sonatype"
-        url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        name 'sonatype'
+        url 'https://oss.sonatype.org/content/repositories/snapshots/'
     }
     maven {
-        name = "mojang"
-        url = "https://libraries.minecraft.net/"
+        name 'mojang'
+        url 'https://libraries.minecraft.net/'
     }
     maven {
-        name = "jitpack"
-        url = "https://jitpack.io"
+        url 'https://jitpack.io'
     }
 }
 
