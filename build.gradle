@@ -42,9 +42,6 @@ repositories {
         name 'mojang'
         url 'https://libraries.minecraft.net/'
     }
-    maven {
-        url 'https://jitpack.io'
-    }
 }
 
 jar {
@@ -69,7 +66,7 @@ dependencies {
     compile 'net.sf.opencsv:opencsv:2.3' // reading CSVs.. also used by SpecialSource
     compile 'com.cloudbees:diff4j:1.1' // for diffing and patching
     compile 'com.github.abrarsyed.jastyle:jAstyle:1.2' // formatting
-    compile 'com.github.JetBrains:intellij-deps-trove4j:c08db9d' //JETBRAINS/Ubuntu/Jenkins fix
+//    compile 'com.github.JetBrains:intellij-deps-trove4j:c08db9d' //JETBRAINS/Ubuntu/Jenkins fix
     compile 'com.github.jponge:lzma-java:1.3' // replaces the LZMA binary
     compile 'com.nothome:javaxdelta:2.0.1' // GDIFF implementation for BinPatches
     compile 'com.google.code.gson:gson:2.2.4' // Used instead of Argo for building changelog.
