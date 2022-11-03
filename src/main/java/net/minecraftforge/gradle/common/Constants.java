@@ -13,8 +13,10 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -45,14 +47,11 @@ public class Constants {
     };
 
     // urls
-    public static final String MC_JSON_URL      = "https://s3.amazonaws.com/Minecraft.Download/versions/{MC_VERSION}/{MC_VERSION}.json";
-    public static final String MC_JAR_URL       = "https://s3.amazonaws.com/Minecraft.Download/versions/{MC_VERSION}/{MC_VERSION}.jar";
-    public static final String MC_SERVER_URL    = "https://s3.amazonaws.com/Minecraft.Download/versions/{MC_VERSION}/minecraft_server.{MC_VERSION}.jar";
+    public static final String URL_MC_MANIFEST  = "https://launchermeta.mojang.com/mc/game/version_manifest.json";
     public static final String MCP_URL          = "https://files.minecraftforge.net/fernflower-fix-1.0.zip";
     public static final String ASSETS_URL       = "https://resources.download.minecraft.net";
     public static final String LIBRARY_URL      = "https://libraries.minecraft.net/";
     public static final String FORGE_MAVEN      = "https://maven.minecraftforge.net";
-    public static final String ASSETS_INDEX_URL = "https://s3.amazonaws.com/Minecraft.Download/indexes/{ASSET_INDEX}.json";
 
     // MCP things
     public static final String CONFIG_MCP_DATA  = "mcpSnapshotDataConfig";
@@ -243,5 +242,66 @@ public class Constants {
             throw new RuntimeException("Resource " + resource + " not found");
 
         return url;
+    }
+    
+    /**
+     * Resolves the supplied object to a string.
+     * If the input is null, this will return null.
+     * Closures and Callables are called with no arguments.
+     * Arrays use Arrays.toString().
+     * File objects return their absolute paths.
+     * All other objects have their toString run.
+     * @param obj Object to resolve
+     * @return resolved string
+     */
+    @SuppressWarnings("rawtypes")
+    public static String resolveString(Object obj)
+    {
+        if (obj == null)
+            return null;
+
+        // stop early if its the right type. no need to do more expensive checks
+        if (obj instanceof String)
+            return (String) obj;
+
+        if (obj instanceof Closure)
+            return resolveString(((Closure) obj).call());// yes recursive.
+        if (obj instanceof Callable)
+        {
+            try
+            {
+                return resolveString(((Callable) obj).call());
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+        else if (obj instanceof File)
+            return ((File) obj).getAbsolutePath();
+
+        // arrays
+        else if (obj.getClass().isArray())
+        {
+            if (obj instanceof Object[])
+                return Arrays.toString(((Object[]) obj));
+            else if (obj instanceof byte[])
+                return Arrays.toString(((byte[]) obj));
+            else if (obj instanceof char[])
+                return Arrays.toString(((char[]) obj));
+            else if (obj instanceof int[])
+                return Arrays.toString(((int[]) obj));
+            else if (obj instanceof float[])
+                return Arrays.toString(((float[]) obj));
+            else if (obj instanceof double[])
+                return Arrays.toString(((double[]) obj));
+            else if (obj instanceof long[])
+                return Arrays.toString(((long[]) obj));
+            else
+                return obj.getClass().getSimpleName();
+        }
+
+        else
+            return obj.toString();
     }
 }

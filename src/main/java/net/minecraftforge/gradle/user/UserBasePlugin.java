@@ -362,7 +362,7 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
     private void readAndApplyJson(File file, String depConfig, String nativeConfig, Logger log) {
         if (version == null) {
             try {
-                version = JsonFactory.loadVersion(file, delayedFile(Constants.JSONS_DIR).call());
+                version = JsonFactory.loadVersion(file, delayedString("{MC_VERSION}").call(), delayedFile(Constants.JSONS_DIR).call());
             } catch (Exception e) {
                 log.error("" + file + " could not be parsed");
                 Throwables.propagate(e);

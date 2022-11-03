@@ -13,7 +13,7 @@ import java.net.URL;
 
 public class DownloadTask extends CachedTask {
     @Input
-    private DelayedString url;
+    private Object url;
 
     @OutputFile
     @Cached
@@ -60,10 +60,10 @@ public class DownloadTask extends CachedTask {
     }
 
     public String getUrl() {
-        return url.call();
+        return Constants.resolveString(url);
     }
 
-    public void setUrl(DelayedString url) {
+    public void setUrl(Object url) {
         this.url = url;
     }
 }

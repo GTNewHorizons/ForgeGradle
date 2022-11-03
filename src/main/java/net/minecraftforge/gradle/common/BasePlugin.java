@@ -18,6 +18,7 @@ import net.minecraftforge.gradle.delayed.DelayedFileTree;
 import net.minecraftforge.gradle.delayed.DelayedString;
 import net.minecraftforge.gradle.json.JsonFactory;
 import net.minecraftforge.gradle.json.version.AssetIndex;
+import net.minecraftforge.gradle.json.version.ManifestVersion;
 import net.minecraftforge.gradle.json.version.Version;
 import net.minecraftforge.gradle.tasks.DownloadAssetsTask;
 import net.minecraftforge.gradle.tasks.ExtractConfigTask;
@@ -46,6 +47,7 @@ public abstract class BasePlugin<K extends BaseExtension> implements Plugin<Proj
     public BasePlugin otherPlugin;
     public Version version;
     public AssetIndex assetIndex;
+    protected Map<String, ManifestVersion> mcManifest;
 
     @SuppressWarnings("rawtypes")
     @Override
@@ -100,7 +102,7 @@ public abstract class BasePlugin<K extends BaseExtension> implements Plugin<Proj
         });
 
         // do Mcp Snapshots Stuff
-        setVersionInfoJson();
+        getRemoteJsons();
         project.getConfigurations().create(Constants.CONFIG_MCP_DATA);
 
         // after eval
@@ -149,13 +151,18 @@ public abstract class BasePlugin<K extends BaseExtension> implements Plugin<Proj
 
     private static boolean displayBanner = true;
 
-    private void setVersionInfoJson() {
+    private void getRemoteJsons() {
+        // MCP json
         File jsonCache = Constants.cacheFile(project, "caches", "minecraft", "McpMappings.json");
         File etagFile = new File(jsonCache.getAbsolutePath() + ".etag");
 
         getExtension().mcpJson = JsonFactory.GSON.fromJson(
                 getWithEtag(Constants.MCP_JSON_URL, jsonCache, etagFile),
                 new TypeToken<Map<String, Map<String, int[]>>>() {}.getType());
+        // MC manifest json
+        jsonCache = Constants.cacheFile(project, "caches", "minecraft", "McManifest.json");
+        etagFile = new File(jsonCache.getAbsolutePath() + ".etag");
+        mcManifest = JsonFactory.GSON.fromJson(getWithEtag(Constants.URL_MC_MANIFEST, jsonCache, etagFile), new TypeToken<Map<String, ManifestVersion>>() {}.getType());
     }
 
     public void afterEvaluate() {
@@ -203,13 +210,25 @@ public abstract class BasePlugin<K extends BaseExtension> implements Plugin<Proj
         task = makeTask("downloadClient", DownloadTask.class);
         {
             task.setOutput(delayedFile(Constants.JAR_CLIENT_FRESH));
-            task.setUrl(delayedString(Constants.MC_JAR_URL));
+            task.setUrl(new Closure<String>(null, null) {
+                @Override
+                public String call()
+                {
+                    return version.getClientUrl();
+                }
+            });
         }
 
         task = makeTask("downloadServer", DownloadTask.class);
         {
             task.setOutput(delayedFile(Constants.JAR_SERVER_FRESH));
-            task.setUrl(delayedString(Constants.MC_SERVER_URL));
+            task.setUrl(new Closure<String>(null, null) {
+                @Override
+                public String call()
+                {
+                    return version.getServerUrl();
+                }
+            });
         }
 
         ObtainFernFlowerTask mcpTask = makeTask("downloadMcpTools", ObtainFernFlowerTask.class);
@@ -220,7 +239,13 @@ public abstract class BasePlugin<K extends BaseExtension> implements Plugin<Proj
 
         EtagDownloadTask etagDlTask = makeTask("getAssetsIndex", EtagDownloadTask.class);
         {
-            etagDlTask.setUrl(delayedString(Constants.ASSETS_INDEX_URL));
+            etagDlTask.setUrl(new Closure<String>(null, null) {
+                @Override
+                public String call()
+                {
+                    return version.assetIndex.url;
+                }
+            });
             etagDlTask.setFile(delayedFile(Constants.ASSETS + "/indexes/{ASSET_INDEX}.json"));
             etagDlTask.setDieWithError(false);
 
@@ -245,7 +270,13 @@ public abstract class BasePlugin<K extends BaseExtension> implements Plugin<Proj
 
         etagDlTask = makeTask("getVersionJson", EtagDownloadTask.class);
         {
-            etagDlTask.setUrl(delayedString(Constants.MC_JSON_URL));
+            etagDlTask.setUrl(new Closure<String>(null, null) {
+                @Override
+                public String call()
+                {
+                    return mcManifest.get(getExtension().getVersion()).url;
+                }
+            });
             etagDlTask.setFile(delayedFile(Constants.VERSION_JSON));
             etagDlTask.setDieWithError(false);
             etagDlTask.doLast(new Closure<Boolean>(project) // normalizes to linux endings

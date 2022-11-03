@@ -1,17 +1,21 @@
 package net.minecraftforge.gradle.json;
 
 import com.google.common.base.Strings;
+import com.google.common.reflect.TypeToken;
 import com.google.gson.*;
 import net.minecraftforge.gradle.json.LiteLoaderJson.VersionObject;
 import net.minecraftforge.gradle.json.version.AssetIndex;
+import net.minecraftforge.gradle.json.version.ManifestVersion;
 import net.minecraftforge.gradle.json.version.Version;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -24,12 +28,13 @@ public class JsonFactory {
         builder.registerTypeAdapter(Date.class, new DateAdapter());
         builder.registerTypeAdapter(File.class, new FileAdapter());
         builder.registerTypeAdapter(VersionObject.class, new LiteLoaderJson.VersionAdapter());
+        builder.registerTypeAdapter(new TypeToken<Map<String, ManifestVersion>>() {}.getType(), new MojangManifestAdapter());
         builder.enableComplexMapKeySerialization();
         builder.setPrettyPrinting();
         GSON = builder.create();
     }
 
-    public static Version loadVersion(File json, File inheritanceDir) throws JsonSyntaxException, JsonIOException, IOException {
+    public static Version loadVersion(File json, String mcVersion, File inheritanceDir) throws JsonSyntaxException, JsonIOException, IOException {
         FileReader reader = new FileReader(json);
         Version v = GSON.fromJson(reader, Version.class);
         reader.close();
@@ -37,9 +42,16 @@ public class JsonFactory {
         if (!Strings.isNullOrEmpty(v.inheritsFrom)) {
             File parentFile = new File(inheritanceDir, v.inheritsFrom + ".json");
             if (!parentFile.exists()) {
-                throw new FileNotFoundException("Inherited json file (" + v.inheritsFrom + ") not found! Myabe you are running in offline mode?");
+                throw new FileNotFoundException("Inherited json file (" + v.inheritsFrom + ") not found! Maybe you are running in offline mode?");
             }
-            Version parent = loadVersion(new File(inheritanceDir, v.inheritsFrom + ".json"), inheritanceDir);
+            Version parent = loadVersion(new File(inheritanceDir, v.inheritsFrom + ".json"), mcVersion, inheritanceDir);
+            v.extendFrom(parent);
+        } else if (v.assetIndex == null) { // inherit if the assetIndex is missing
+            File parentFile = new File(inheritanceDir, mcVersion + ".json");
+            if (!parentFile.exists()) {
+                throw new FileNotFoundException("Inherited json file (" + v.inheritsFrom + ") not found! Maybe you are running in offline mode?");
+            }
+            Version parent = loadVersion(new File(inheritanceDir, mcVersion + ".json"), mcVersion, inheritanceDir);
             v.extendFrom(parent);
         }
 

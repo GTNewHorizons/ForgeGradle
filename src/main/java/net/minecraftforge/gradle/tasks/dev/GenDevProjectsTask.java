@@ -49,7 +49,7 @@ public class GenDevProjectsTask extends DefaultTask {
     }
 
     private void parseJson() throws IOException {
-        Version version = JsonFactory.loadVersion(getJson(), getJson().getParentFile());
+        Version version = JsonFactory.loadVersion(getJson(), mcVersion.call(), getJson().getParentFile());
 
         for (Library lib : version.getLibraries()) {
             if (lib.name.contains("fixed") || lib.natives != null || lib.extract != null) {
