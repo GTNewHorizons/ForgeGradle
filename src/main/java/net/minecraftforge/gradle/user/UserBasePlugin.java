@@ -1017,7 +1017,13 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
 
         // grab the json && read dependencies
         if (getDevJson().call().exists()) {
-            readAndApplyJson(getDevJson().call(), CONFIG_DEPS, CONFIG_NATIVES, project.getLogger());
+            if(new File(delayedFile(Constants.JSONS_DIR).call(), delayedString("{MC_VERSION}").call() + ".json").isFile()) {
+                readAndApplyJson(getDevJson().call(), CONFIG_DEPS, CONFIG_NATIVES, project.getLogger());
+            } else {
+                // the version json is missing.
+                // extractUserDev runs after getVersionJson, and calls readAndApplyJson in its doLate hook; make sure it runs
+                project.getTasks().getByName("extractUserDev").getOutputs().upToDateWhen(Constants.CALL_FALSE);
+            }
         }
 
         delayedTaskConfig();
