@@ -1154,6 +1154,13 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
             t.replace(getExtension().getReplacements());
             t.include(getExtension().getIncludes());
         }
+        
+        // make tasks that need the version json depend on extractUserDev (which is where the json gets loaded)
+        {
+            project.getTasks().getByName("downloadClient").dependsOn(project.getTasks().getByName("extractUserDev"));
+            project.getTasks().getByName("downloadServer").dependsOn(project.getTasks().getByName("extractUserDev"));
+            project.getTasks().getByName("getAssetsIndex").dependsOn(project.getTasks().getByName("extractUserDev"));
+        }
     }
 
     /**
