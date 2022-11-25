@@ -27,12 +27,7 @@ repositories {
 	maven {
 		name 'GT forge Mirror'
 		url 'https://gregtech.overminddl1.com/'
-	}
-    maven {
-        // GTNH SpecialSource Fork
-        name = "GTNH Maven"
-        url = "http://jenkins.usrv.eu:8081/nexus/content/groups/public/"
-    }
+	}	
     maven {
         // because Srg2Source needs an eclipse dependency.
         name 'eclipse'
@@ -65,12 +60,7 @@ dependencies {
     compile gradleApi()
 
     // moved to the beginning to be the overrider
-    compile 'org.ow2.asm:asm:9.4'
-    compile 'org.ow2.asm:asm-tree:9.4'
-    compile 'org.ow2.asm:asm-xml:6.2.1'
-    compile 'org.ow2.asm:asm-util:9.4'
-    compile 'org.ow2.asm:asm-commons:9.4'
-
+    compile 'org.ow2.asm:asm-debug-all:5.0.3'
     compile 'com.google.guava:guava:18.0'
 
     compile 'net.sf.opencsv:opencsv:2.3' // reading CSVs.. also used by SpecialSource
@@ -82,8 +72,7 @@ dependencies {
     compile 'com.google.code.gson:gson:2.2.4' // Used instead of Argo for building changelog.
     compile 'com.github.tony19:named-regexp:0.2.3' // 1.7 Named regexp features
 
-    //Custom version of SpecialSource which uses ASM 9
-    compile 'com.github.GTNewHorizons:SpecialSource:1.7.5' // deobf and reobs
+    compile 'net.md-5:SpecialSource:1.7.3' // deobf and reobs
 
     // because curse
     compile 'org.apache.httpcomponents:httpclient:4.3.3'
